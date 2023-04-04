@@ -1,0 +1,24 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ExecuteFeedbackAttentionCNN" type="PythonConfigurationType" factoryName="Python">
+    <module name="feedback-attention-cnn" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+    </envs>
+    <option name="SDK_HOME" value="C:\Users\scajb\AppData\Local\Continuum\anaconda3\python.exe" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="IS_MODULE_SDK" value="false" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <option name="SCRIPT_NAME" value="ExecuteFeedbackAttentionCNN.py" />
+    <option name="PARAMETERS" value="&quot;C:\Users\scajb\nobackup\scajb\trained-models\unet-feedback-attention-vgg19_pt-unethybridreccat-mul-layers-0-5-10-19-28-1-iterations-ImageNet100-200-epochs-EXP_IN100_001.pt&quot; &quot;C:\Users\scajb\data\ImageNet100\Test\000-chambered_nautilus\ILSVRC2012_val_00033974.JPEG&quot; &quot;./results/ExecuteFeedbackAttentionCNN.log&quot;" />
+    <option name="SHOW_COMMAND_LINE" value="false" />
+    <option name="EMULATE_TERMINAL" value="false" />
+    <option name="MODULE_MODE" value="false" />
+    <option name="REDIRECT_INPUT" value="false" />
+    <option name="INPUT_FILE" value="" />
+    <method v="2" />
+  </configuration>
+</component>

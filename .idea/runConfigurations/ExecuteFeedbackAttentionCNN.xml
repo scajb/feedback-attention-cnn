@@ -13,7 +13,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="ExecuteFeedbackAttentionCNN.py" />
-    <option name="PARAMETERS" value="&quot;C:\Users\scajb\nobackup\scajb\trained-models\unet-feedback-attention-vgg19_pt-unethybridreccat-mul-layers-0-5-10-19-28-1-iterations-ImageNet100-200-epochs-EXP_IN100_001.pt&quot; &quot;C:\Users\scajb\data\ImageNet100\Test\000-chambered_nautilus\ILSVRC2012_val_00033974.JPEG&quot; &quot;./results/ExecuteFeedbackAttentionCNN.log&quot;" />
+    <option name="PARAMETERS" value="&quot;C:\Users\scajb\nobackup\scajb\trained-models\unet-feedback-attention-vgg19_pt-unethybridreccat-mul-layers-0-5-10-19-28-1-iterations-ImageNet100-200-epochs-EXP_IN100_001.pt&quot; &quot;C:\Users\scajb\data\ImageNet100\Test\000-chambered_nautilus\ILSVRC2012_val_00033974.JPEG&quot; &quot;./results/ExecuteFeedbackAttentionCNN.log&quot; &quot;$PROJECT_DIR$/../../../../Temp/FeedbackAttentionVisualisations&quot;" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

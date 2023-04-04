@@ -5,9 +5,11 @@ import numpy as np
 import skimage
 import torch
 from matplotlib import cm
+from scipy import ndimage
 from skimage.io import imsave
 
 from classes.filesystem.DirectorySupport import DirectorySupport
+from classes.image.ContourGenerator import ContourGenerator
 from classes.visualisation.ImageLoader import ImageLoader
 from device import get_device
 from logging_support import log_info, init_logging
@@ -43,6 +45,11 @@ def save_image(output_dir, filename_stub, layer_num, iteration_num, suffix, img,
     output_path = os.path.join(output_dir, filename)
     imsave(output_path, img, check_contrast=False)
     log_info(f"Output image saved to: {os.path.abspath(output_path)}")
+
+def resize_mask_to_target(target, mask, mask_range=1.0):
+    zoom_ratio = int(target.shape[0] / mask.shape[0])
+    mask_resized = ndimage.zoom(mask, zoom_ratio, order=0)
+    return mask_resized / mask_range
 
 
 def execute_feedback_attention():
@@ -92,14 +99,22 @@ def execute_feedback_attention():
             feedback_layer_num = feedback_layers[layer_idx]
 
             # Normalise, scale and combine feedback activations into a mean 'heatmap' array for current feedback layer
-            norm_fb_acts = normalise_feedback_activations(feedback_activations, feedback_layer_num)
-            scaled_fb_acts = skimage.transform.resize(norm_fb_acts, required_size, preserve_range=True)
-            heatmap_img = np.mean(scaled_fb_acts, axis=2)
+            heatmap_img = create_feedback_heatmap(feedback_activations, feedback_layer_num, required_size)
 
             # Plot and save attention heatmaps (mean of feedback activations across all channels)
             save_image(output_dir_path, filename_stub, feedback_layer_num, iteration_num, "heatmap", heatmap_img)
 
             # Plot and save contour image
+            resized_heatmap_image = resize_mask_to_target(np_img, normalise_image(heatmap_img) * 255)
+            contoured_image, all_contours = ContourGenerator().add_contours(np_img, resized_heatmap_image)
+            save_image(output_dir_path, filename_stub, feedback_layer_num, iteration_num, "contours", contoured_image)
+
+
+def create_feedback_heatmap(feedback_activations, feedback_layer_num, required_size):
+    norm_fb_acts = normalise_feedback_activations(feedback_activations, feedback_layer_num)
+    scaled_fb_acts = skimage.transform.resize(norm_fb_acts, required_size, preserve_range=True)
+    heatmap_img = np.mean(scaled_fb_acts, axis=2)
+    return heatmap_img
 
 
 if __name__ == "__main__":

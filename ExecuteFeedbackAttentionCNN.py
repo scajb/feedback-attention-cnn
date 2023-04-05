@@ -1,6 +1,8 @@
+import glob
 import os
 import sys
 
+import cv2
 import numpy as np
 import skimage
 import torch
@@ -8,6 +10,7 @@ from matplotlib import cm
 from scipy import ndimage
 from skimage.io import imsave
 
+from classes.annotation.ImageNetBoundingBoxLoader import ImageNetBoundingBoxLoader
 from classes.filesystem.DirectorySupport import DirectorySupport
 from classes.image.ContourGenerator import ContourGenerator
 from classes.visualisation.ImageLoader import ImageLoader
@@ -52,9 +55,51 @@ def resize_mask_to_target(target, mask, mask_range=1.0):
     return mask_resized / mask_range
 
 
+def load_bounding_boxes(bounding_box_xml_dir, filename_stub, required_size):
+    # Find XML annotation file e.g. n00007846_33974.xml corresponding to input filename e.g. ILSVRC2012_val_00033974
+    image_file_id = int(filename_stub.split("_")[-1])  # convert to int to lose preceding zeros
+    xml_file_wildcard = os.path.join(bounding_box_xml_dir, f"*_{image_file_id}.xml")
+    matching_xml_files = glob.glob(xml_file_wildcard)
+
+    if len(matching_xml_files) == 0:
+        log_info(f"No bounding box found at {xml_file_wildcard} to match image {filename_stub}")
+        return None
+
+    # Load annotation - assume only one file matches unique id
+    bb_file = matching_xml_files[0]
+    log_info(f"Loaded bounding box annotation from {bb_file}")
+    outer_box = ImageNetBoundingBoxLoader().load_boxes(bb_file)
+
+    # Scale/crop bounding box coordinates according to image size going into model
+    scaled_outer_box = outer_box.crop_scale_copy(required_size)
+
+    # Return collection of Box objects for bounding box annotations
+    return scaled_outer_box.child_boxes
+
+
+def save_bounding_box_image(bboxes, output_dir_path, filename_stub, np_img):
+    if bboxes is None:
+        return
+
+    colours = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (0, 255, 255), (255, 0, 255), (255, 255, 0)]
+
+    # Copy input image, to overwrite with bounding box outline
+    image_with_bb = np_img.copy()
+
+    # Add bounding box rectangles to new image
+    for i, bb in enumerate(bboxes):
+        cv2.rectangle(image_with_bb, (bb.left, bb.top), (bb.right, bb.bottom), colours[i % len(colours)], 1)
+
+    # Save image
+    filename = f"{filename_stub}-bounding-box.png"
+    output_path = os.path.join(output_dir_path, filename)
+    imsave(output_path, image_with_bb, check_contrast=False)
+    log_info(f"Output image saved to: {os.path.abspath(output_path)}")
+
+
 def execute_feedback_attention():
     # Derive absolute file paths from shell args
-    model_path, image_path, log_path, output_dir_path = [os.path.abspath(p) for p in sys.argv[1:5]]
+    model_path, image_path, log_path, output_dir_path, bounding_box_xml_dir_path = [os.path.abspath(p) for p in sys.argv[1:6]]
     init_logging(log_path, sys.argv)
 
     # Load device: CUDA GPU if available, or CPU
@@ -88,15 +133,19 @@ def execute_feedback_attention():
     # Load input image again, as a numpy array, to use in visualisations
     np_img = ImageLoader.load_resized_numpy_float_image(image_path, required_size)
 
+    # Load and plot ground truth bounding box(es), if available for current image
+    bboxes = load_bounding_boxes(bounding_box_xml_dir_path, filename_stub, required_size)
+    save_bounding_box_image(bboxes, output_dir_path, filename_stub, np_img)
+
     # For each feedback iteration reported by model
     for iteration_num, feedback_iteration_results in enumerate(feedback_iterations):
         feedbacks = [fb.detach().cpu().numpy() for fb in feedback_iteration_results]
 
         # For each feedback activation (to each CNN layer where feedback applied)
-        for layer_idx, feedback_batch in enumerate(feedbacks):
-            feedback_activations = feedback_batch[0]
-            feedback_layers = [0, 5, 10, 19, 28]
-            feedback_layer_num = feedback_layers[layer_idx]
+        for l, batch in enumerate(feedbacks):
+            feedback_activations = batch[0]  # only one image in batch here
+            feedback_layers = [0, 5, 10, 19, 28]  # feedback layers used in 'hybrid recurrent' feedback model
+            feedback_layer_num = feedback_layers[l]
 
             # Normalise, scale and combine feedback activations into a mean 'heatmap' array for current feedback layer
             heatmap_img = create_feedback_heatmap(feedback_activations, feedback_layer_num, required_size)
@@ -107,7 +156,10 @@ def execute_feedback_attention():
             # Plot and save contour image
             resized_heatmap_image = resize_mask_to_target(np_img, normalise_image(heatmap_img) * 255)
             contoured_image, all_contours = ContourGenerator().add_contours(np_img, resized_heatmap_image)
-            save_image(output_dir_path, filename_stub, feedback_layer_num, iteration_num, "contours", contoured_image)
+            save_image(output_dir_path, filename_stub, feedback_layer_num, iteration_num,
+                       "contours", contoured_image, "jpeg")
+
+
 
 
 def create_feedback_heatmap(feedback_activations, feedback_layer_num, required_size):

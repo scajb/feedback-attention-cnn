@@ -99,7 +99,9 @@ def save_bounding_box_image(bboxes, output_dir_path, filename_stub, np_img):
 
 def execute_feedback_attention():
     # Derive absolute file paths from shell args
-    model_path, image_path, log_path, output_dir_path, bounding_box_xml_dir_path = [os.path.abspath(p) for p in sys.argv[1:6]]
+    model_path, image_path, log_path, output_dir_path, bounding_box_xml_dir_path = \
+        [os.path.abspath(p) for p in sys.argv[1:6]]
+
     init_logging(log_path, sys.argv)
 
     # Load device: CUDA GPU if available, or CPU

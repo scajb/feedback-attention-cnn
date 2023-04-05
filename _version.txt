@@ -1,3 +1,4 @@
+1.0.4 Updated README.md
 1.0.3 Added bounding box visualisation
 1.0.2 Plotting and saving attention contour plots per iteration and layer
 1.0.1 Plotting and saving feedback attention heatmaps per iteration and layer

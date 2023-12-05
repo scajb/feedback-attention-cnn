@@ -1,11 +1,11 @@
 from torch import nn
 
-from classes.classifier.FeedbackAttentionModule import MultiplyingFeedbackAttentionModule
+from classes.classifier.MultiplyingFeedbackAttentionModule import MultiplyingFeedbackAttentionModule
 
 
-class UNetBuilder:
+class FeedbackModelBuilder:
     @staticmethod
-    def get_feedback_module(included, feedback_module_type, device, in_channels, image_size):
+    def get_feedback_module(included, device, in_channels, image_size):
         return None if not included else MultiplyingFeedbackAttentionModule(in_channels, image_size, device)
 
     @staticmethod
@@ -26,7 +26,8 @@ class UNetBuilder:
             nn.Conv2d(out_channels, out_channels, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
             nn.ReLU(inplace=True)
         )
-        UNetBuilder.copy_weights(baseline_vgg19.features, weight_source_indices, conv, [0, 2])
+        if baseline_vgg19 is not None:
+            FeedbackModelBuilder.copy_weights(baseline_vgg19.features, weight_source_indices, conv, [0, 2])
         return conv
 
     @staticmethod
@@ -41,7 +42,8 @@ class UNetBuilder:
             nn.Conv2d(out_channels, out_channels, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
             nn.ReLU(inplace=True)
         )
-        UNetBuilder.copy_weights(baseline_vgg19.features, weight_source_indices, conv, [0, 2, 4, 6])
+        if baseline_vgg19 is not None:
+            FeedbackModelBuilder.copy_weights(baseline_vgg19.features, weight_source_indices, conv, [0, 2, 4, 6])
         return conv
 
     @staticmethod
@@ -130,7 +132,8 @@ class UNetBuilder:
             nn.Dropout(p=0.5, inplace=False),
             nn.Linear(in_features=4096, out_features=1000, bias=True)
         )
-        UNetBuilder.copy_weights(baseline_vgg19.classifier, [0, 3, 6], lin, [0, 3, 6])
+        if baseline_vgg19 is not None:
+            FeedbackModelBuilder.copy_weights(baseline_vgg19.classifier, [0, 3, 6], lin, [0, 3, 6])
         return lin
 
     @staticmethod

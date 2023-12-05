@@ -11,6 +11,7 @@ from scipy import ndimage
 from skimage.io import imsave
 
 from classes.annotation.ImageNetBoundingBoxLoader import ImageNetBoundingBoxLoader
+from classes.classifier.FeedbackAttentionLadderCNN import FeedbackAttentionLadderCNN
 from classes.filesystem.DirectorySupport import DirectorySupport
 from classes.image.ContourGenerator import ContourGenerator
 from classes.visualisation.ImageLoader import ImageLoader
@@ -99,7 +100,7 @@ def save_bounding_box_image(bboxes, output_dir_path, filename_stub, np_img):
 
 def execute_feedback_attention():
     # Derive absolute file paths from shell args
-    model_path, image_path, log_path, output_dir_path, bounding_box_xml_dir_path = \
+    model_weights_path, image_path, log_path, output_dir_path, bounding_box_xml_dir_path = \
         [os.path.abspath(p) for p in sys.argv[1:6]]
 
     init_logging(log_path, sys.argv)
@@ -108,9 +109,18 @@ def execute_feedback_attention():
     device = get_device(use_cpu=True)
 
     # Load pre-trained feedback attention CNN model from given file path
-    log_info(f"Loading model from {model_path}")
-    model = torch.load(model_path, map_location=device)
-    model.device = device
+    # log_info(f"Loading model from {model_weights_path}")
+    # model = torch.load(model_weights_path, map_location=device)
+    # model.device = device
+
+    # TEMP - save model weights for comparison
+    # model_weights_path = model_weights_path + "h"
+    # log_info(f"Saving model weights to {model_weights_path}")
+    # torch.save(model.state_dict(), model_weights_path)
+    num_iterations = int(model_weights_path.split("-iterations")[0][-1])
+    model = FeedbackAttentionLadderCNN(None, "0,5,10,19,28", device=device, num_iterations=num_iterations)
+    log_info(f"Loading model weights from {model_weights_path}")
+    model.load_state_dict(torch.load(model_weights_path))
 
     # Load specified input image, as 224 x 224 pixel RGB torch tensor to fit model input
     required_size = (224, 224)
@@ -153,7 +163,7 @@ def execute_feedback_attention():
             heatmap_img = create_feedback_heatmap(feedback_activations, feedback_layer_num, required_size)
 
             # Plot and save attention heatmaps (mean of feedback activations across all channels)
-            save_image(output_dir_path, filename_stub, feedback_layer_num, iteration_num, "heatmap", heatmap_img)
+            # save_image(output_dir_path, filename_stub, feedback_layer_num, iteration_num, "heatmap", heatmap_img)
 
             # Plot and save contour image
             resized_heatmap_image = resize_mask_to_target(np_img, normalise_image(heatmap_img) * 255)

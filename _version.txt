@@ -1,3 +1,4 @@
+1.1.0 Modified ExecuteFeedbackAttentionCNN to use refactored FeedbackAttentionLadderCNN with saved weights
 1.0.4 Updated README.md
 1.0.3 Added bounding box visualisation
 1.0.2 Plotting and saving attention contour plots per iteration and layer

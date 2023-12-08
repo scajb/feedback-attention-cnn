@@ -39,14 +39,11 @@ class ImageLoader:
 
     @staticmethod
     def load_resized_torch_rgb_image(input_path, device, required_size):
-        # Read image
         log_info(f"Loading torch RGB image from {os.path.abspath(input_path)}")
         img = imread(input_path)
-
         cropped_img = ImageLoader.square_crop(img)
-
         torch_img = ImageLoader.generate_resized_rgb_image(device, cropped_img, required_size)
-        return torch_img, required_size
+        return torch_img
 
     @staticmethod
     def square_crop(img):

@@ -96,6 +96,10 @@ class Box:
         return [self.left + (self.right - self.left) / 2,
                 self.top + (self.bottom - self.top) / 2]
 
+    def get_int_centre(self):
+        cen = self.get_centre()
+        return [int(cen[0]), int(cen[1])]
+
     def get_width(self):
         return self.right - self.left
 

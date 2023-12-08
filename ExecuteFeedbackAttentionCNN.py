@@ -108,23 +108,12 @@ def execute_feedback_attention():
     # Load device: CUDA GPU if available, or CPU
     device = get_device(use_cpu=True)
 
-    # Load pre-trained feedback attention CNN model from given file path
-    # log_info(f"Loading model from {model_weights_path}")
-    # model = torch.load(model_weights_path, map_location=device)
-    # model.device = device
-
-    # TEMP - save model weights for comparison
-    # model_weights_path = model_weights_path + "h"
-    # log_info(f"Saving model weights to {model_weights_path}")
-    # torch.save(model.state_dict(), model_weights_path)
-    num_iterations = int(model_weights_path.split("-iterations")[0][-1])
-    model = FeedbackAttentionLadderCNN(None, "0,5,10,19,28", device=device, num_iterations=num_iterations)
-    log_info(f"Loading model weights from {model_weights_path}")
-    model.load_state_dict(torch.load(model_weights_path))
+    # Create FAL-CNN model and load pre-trained feedback weights from given file path
+    model = FeedbackAttentionLadderCNN.build_from_weights(device, model_weights_path)
 
     # Load specified input image, as 224 x 224 pixel RGB torch tensor to fit model input
     required_size = (224, 224)
-    torch_img, _ = ImageLoader.load_resized_torch_rgb_image(image_path, device, required_size)
+    torch_img = ImageLoader.load_resized_torch_rgb_image(image_path, device, required_size)
 
     # Apply model to image.
     # Model returns predicted class tensor, and nested collection of feedback activations per feedback iteration,
@@ -172,8 +161,6 @@ def execute_feedback_attention():
                        "contours", contoured_image, "jpeg")
 
 
-
-
 def create_feedback_heatmap(feedback_activations, feedback_layer_num, required_size):
     norm_fb_acts = normalise_feedback_activations(feedback_activations, feedback_layer_num)
     scaled_fb_acts = skimage.transform.resize(norm_fb_acts, required_size, preserve_range=True)
@@ -197,6 +184,8 @@ if __name__ == "__main__":
     1) Path to pre-trained CNN model under test
     2) Path to RGB image to load and process
     3) Path for log file output 
+    4) Output directory path for feedback visualisation plots
+    5) Directory path for ImageNet bounding box annotation XML
     
     """
     execute_feedback_attention()

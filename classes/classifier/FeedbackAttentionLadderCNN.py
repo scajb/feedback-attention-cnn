@@ -100,6 +100,15 @@ class FeedbackAttentionLadderCNN(nn.Module):
         if baseline_vgg19 is not None:
             FeedbackModelBuilder.copy_weights(baseline_vgg19.classifier, [6], self.output_linear_layers, [3])
 
+    @staticmethod
+    def build_from_weights(device, model_weights_path):
+        num_iterations = int(model_weights_path.split("-iterations")[0][-1])
+        model = FeedbackAttentionLadderCNN(None, "0,5,10,19,28", device=device, num_iterations=num_iterations)
+
+        log_info(f"Loading model weights from {model_weights_path}")
+        model.load_state_dict(torch.load(model_weights_path))
+        return model
+
     def forward(self, out):
         out.requires_grad = True
 

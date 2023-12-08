@@ -147,6 +147,9 @@ if __name__ == "__main__":
     3) Path for log file output 
     4) Output directory path for feedback visualisation plots
     5) Number of saccade iterations required
+    
+    Sample ImageNet-100 images:
+    Tiger shark - 
 
     """
     execute_saccade_model()

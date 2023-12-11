@@ -1,3 +1,4 @@
+1.2.2 Updating README with instructions for using FAL-CNN and Saccade model
 1.2.1 Added SaccadeViewer.ipynb Jupyter Notebook, generating combined plots from saccade model output plots
 1.2.0 Added ExecuteSaccadeModel, to plot saccade sequences using Saccade model and FAL-CNN
 1.1.0 Modified ExecuteFeedbackAttentionCNN to use refactored FeedbackAttentionLadderCNN with saved weights

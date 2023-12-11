@@ -106,7 +106,7 @@ def execute_feedback_attention():
     init_logging(log_path, sys.argv)
 
     # Load device: CUDA GPU if available, or CPU
-    device = get_device(use_cpu=True)
+    device = get_device()  # (use_cpu=True) # use this option to force usage of CPU e.g. when GPU RAM insufficient.
 
     # Create FAL-CNN model and load pre-trained feedback weights from given file path
     model = FeedbackAttentionLadderCNN.build_from_weights(device, model_weights_path)
@@ -181,7 +181,7 @@ if __name__ == "__main__":
     Args:
     
     0) Path to this script
-    1) Path to pre-trained CNN model under test
+    1) Path to pre-trained weights for FAL-CNN model under test
     2) Path to RGB image to load and process
     3) Path for log file output 
     4) Output directory path for feedback visualisation plots

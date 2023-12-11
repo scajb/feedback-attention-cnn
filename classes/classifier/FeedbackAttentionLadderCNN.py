@@ -106,8 +106,9 @@ class FeedbackAttentionLadderCNN(nn.Module):
         model = FeedbackAttentionLadderCNN(None, "0,5,10,19,28", device=device, num_iterations=num_iterations)
 
         log_info(f"Loading model weights from {model_weights_path}")
-        model.load_state_dict(torch.load(model_weights_path))
-        return model
+        state_dict = torch.load(model_weights_path)
+        model.load_state_dict(state_dict)
+        return model.to(device)
 
     def forward(self, out):
         out.requires_grad = True

@@ -1,12 +1,18 @@
 # feedback-attention-cnn
-This repository contains implementations of CNN classifier models using Feedback Attention and Saccade behaviour,
-introduced in our paper _Object-based Attention Improves Tumour Detection in Digital Pathology_. 
+This repository contains implementations of brain-inspired CNN models that implement 
+Feedback Attention and Saccade behaviour, as described in our paper 
+_Object-based Attention Improves Tumour Detection in Digital Pathology_. 
 
-A link to the paper will be supplied once a preprint edition has been published online. 
+(A link to the paper will be supplied here once a preprint edition has been published online.) 
 
 ## Feedback Attention Ladder CNN
 
-The script _**ExecuteFeedbackAttentionCNN.py**_ instantiates a Feedback Attention Ladder CNN (FAL-CNN) feedback attention model,
+The Feedback Attention Ladder CNN (FAL-CNN) is a VGG19-based CNN with additional convolutional feedback pathways
+controlling spatial and channel attention at multiple convolutional levels in the feedforward path. 
+This architecture has been found to enhance classification accuracy, and provides attention distributions that 
+highlight salient objects 
+
+The script _**ExecuteFeedbackAttentionCNN.py**_ instantiates a FAL-NN model,
 initialises its weights from a specified file then executes the FAL-CNN against a specified input image. 
 
 The feedback attention model outputs a predicted class, which is reported to a specified log file. 
@@ -25,16 +31,18 @@ If running in PyCharm, these can be configured in the Run Configuration
 based on the _ExecuteFeedbackAttentionCNN_ example supplied. 
 
 1. Path to attention weights of pre-trained FAL-CNN model, as .PTH file.
-2. Path to RGB input image, e.g. in ImageNet-100 Test set, as JPEG or PNG
+2. Path to RGB input image, e.g. in ImageNet-100 Validation set, as JPEG or PNG
 3. Path for local log file output
 4. Path to output directory, where generated images will be saved
 5. Optional path to directory of XML files containing ImageNet bounding box annotations
 
-## Saccade model
+## Saccade model: Python script
+
+The Saccade model implements a vision-inspired algorithm for tracking to salient features in a larger input image. 
 
 The script _**ExecuteSaccadeModel.py**_ constructs and executes a Saccade model,
-using an embedded FAL-CNN feedback attention model to sample a sequence of  
-224x224px image regions within a 448x448px input image. The inner region is 
+using an embedded FAL-CNN feedback attention model to sample a sequence of 224x224px image regions 
+within a 448x448px input image. The inner region is 
 initially taken from the centre of the larger image, then tracks to follow the 
 Centre of Attention (CoA) derived from mean feedback activations in the FAL-CNN.
 
@@ -48,27 +56,27 @@ The _**ExecuteSaccadeModel**_ script requires the following inputs.
 If running in PyCharm, these can be configured in a Run Configuration 
 based on the _ExecuteSaccadeModel_ example supplied.
 
-1. Path to attention weights of pre-trained FAL-CNN model, as .PTH file.
-2. Path to RGB input image, e.g. in ImageNet-100 Test set, as JPEG or PNG
+1. Path to attention weights of pre-trained FAL-CNN model, as .PTH file
+2. Path to RGB input image, e.g. in ImageNet-100 Validation set, as JPEG or PNG
 3. Path for local log file output
 4. Output directory path for feedback visualisation plots
 5. Number of saccade iterations required
 
 ## Saccade model: Jupyter notebook for composite plots
 
-Once _ExecuteSaccadeModel_ has been executed for an input image, the 
+Once _**ExecuteSaccadeModel**_ has been executed for an input image, the 
 Jupyter notebook _**SaccadeViewer.ipynb**_ can be used to generate a composite plot
 showing the sequence of saccade movements and associated regions of high attention.
 
 ![Screenshot](saccade-sequence-example-1.png)
 
-Local variables **_input_dir_** and **_saccade_inputs_** can be configured according to 
-file names and directory locations used in _ExecuteSaccadeModel_.
-## Data requirements (data supplied separately from this repo)
+Local variables **_input_dir_** and **_saccade_inputs_** should be configured with the
+output directory path and input image filenames used in _ExecuteSaccadeModel_.
+## Data requirements
 
-1. Pre-trained feedback model weights, matching FeedbackAttentionLadderCNN class in _classes/classifier_.
-2. ImageNet-100 Test set, downloaded to local directory
-3. Optional ImageNet bounding box annotations (XML files)
+1. Pre-trained feedback model weights, for 1, 2 or 3-iteration FeedbackAttentionLadderCNN in _classes/classifier_ are available from https://zenodo.org/doi/10.5281/zenodo.10361266
+2. ImageNet-100 Validation set should be downloaded to local directory from Kaggle Challenge site at https://www.kaggle.com/datasets/ambityga/imagenet100
+3. Optional ImageNet bounding box annotations (XML files) are available from https://image-net.org/download-bboxes.php 
 
 ## Python environment
 
@@ -77,7 +85,7 @@ on an HPC environment or local Anaconda installation.
 It is recommended to run these commands against a new, named Conda environment for this project, 
 to protect pre-existing package versions in your base environment. 
 
-Note that the PyTorch versions were chosen for compatibility with the CUDA drivers on the HPC nodes used by the author. 
+The PyTorch versions were chosen for compatibility with the CUDA drivers on the HPC nodes used by the author. 
 If your local installation uses a different version of CUDA you may need to substitute compatible PyTorch versions, 
 per https://discuss.pytorch.org/t/pytorch-for-cuda-10-2/65524 and https://pytorch.org/get-started/previous-versions/.
 If no CUDA installation exists, the above code will automatically run on the available CPU instead.

@@ -38,6 +38,12 @@ based on the _ExecuteFeedbackAttentionCNN_ example supplied.
 4. Path to output directory, where generated images will be saved
 5. Optional path to directory of XML files containing ImageNet bounding box annotations
 
+### Example syntax
+
+```
+python ExecuteFeedbackAttentionCNN.py ./model-weights/fal-cnn-1-iterations-ImageNet100-split-001.pth ./ImageNet-100/Test/000-chambered_nautilus/ILSVRC2012_val_00033974.JPEG ./output/logs/ExecuteFeedbackAttentionCNN.log ./output/attention-visualisations
+```
+
 ## Data requirements
 
 1. Pre-trained feedback model weights, for 1, 2 or 3-iteration FeedbackAttentionLadderCNN in _classes/classifier_ are available from https://zenodo.org/doi/10.5281/zenodo.10361266
@@ -70,6 +76,12 @@ based on the _ExecuteSaccadeModel_ example supplied.
 3. Path for local log file output
 4. Output directory path for feedback visualisation plots
 5. Number of saccade iterations required
+
+### Example syntax
+
+```
+python ExecuteSaccadeModel.py ./model-weights/fal-cnn-1-iterations-ImageNet100-split-001.pth ./Image000-chambered_nautilus/ILSVRC2012_val_00033974.JPEG ./output/logs/ExecuteSaccadeModel.log ./output/saccade-visualisations 5
+```
 
 ## Saccade model: Jupyter notebook for composite plots
 

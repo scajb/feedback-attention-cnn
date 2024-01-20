@@ -24,6 +24,7 @@ def normalise_image(norm_img):
         norm_img /= mx
     return norm_img
 
+
 def add_cross(img, coords, colour_, thickness=2, arm_len=10):
     x = int(img.shape[1] / 2 + coords[0])  # coords passed are relative to image centre, so offset them
     y = int(img.shape[0] / 2 + coords[1])
@@ -31,10 +32,12 @@ def add_cross(img, coords, colour_, thickness=2, arm_len=10):
     img = cv.line(img, (x, y + arm_len), (x, y - arm_len), colour_, thickness=thickness)
     return img
 
+
 def save_resized_image(img_tile, size, output_path):
     resized_img = resize(img_tile, size, preserve_range=True)
-    imsave(output_path, resized_img, check_contrast=False)
+    imsave(output_path, resized_img.astype(np.uint8), check_contrast=False)
     log_info(f"Image {img_tile.shape} saved at {resized_img.shape} as: {os.path.abspath(output_path)}")
+
 
 def execute_saccade_model():
     # Derive absolute file path and other parameters from shell args
@@ -71,7 +74,6 @@ def execute_saccade_model():
 
 def plot_saccade_images(centroids, class_outputs, cropped_images, fal_cnn_input_size, feedback_groups,
                         image_path, num_saccades, output_dir_path, saccade_box_groups, size_448px):
-
     # Ensure output directory exists
     DirectorySupport.create_directory(output_dir_path)
 
@@ -123,7 +125,7 @@ def plot_saccade_images(centroids, class_outputs, cropped_images, fal_cnn_input_
 
         # Write image file with superimposed boxes
         saccade_img_path = os.path.join(output_dir_path, f"{file_stem}-{num_saccades}-saccades.png")
-        imsave(saccade_img_path, image_with_saccades, check_contrast=False)
+        imsave(saccade_img_path, image_with_saccades.astype(np.uint8), check_contrast=False)
         log_info(f"Saccade image {image_with_saccades.shape} saved as: {os.path.abspath(saccade_img_path)}")
 
 

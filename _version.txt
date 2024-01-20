@@ -1,3 +1,4 @@
+1.2.4 Fixing issues with imsave() data types on HPC
 1.2.3 Updating README with new Python env setup; fixing issues with device mapping on load, and default args
 1.2.2 Updating README with instructions for using FAL-CNN and Saccade model
 1.2.1 Added SaccadeViewer.ipynb Jupyter Notebook, generating combined plots from saccade model output plots

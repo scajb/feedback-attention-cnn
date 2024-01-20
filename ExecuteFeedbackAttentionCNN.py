@@ -50,7 +50,7 @@ def save_image(output_dir, filename_stub, layer_num, iteration_num, suffix, img,
     # Write file to output dir
     filename = f"{filename_stub}-layer-{layer_num}-iteration-{iteration_num}-{suffix}.{extn}"
     output_path = os.path.join(output_dir, filename)
-    imsave(output_path, img, check_contrast=False)
+    imsave(output_path, img.astype(np.uint8), check_contrast=False)
     log_info(f"Output image saved to: {os.path.abspath(output_path)}")
 
 
@@ -98,7 +98,7 @@ def save_bounding_box_image(bboxes, output_dir_path, filename_stub, np_img):
     # Save image
     filename = f"{filename_stub}-bounding-box.png"
     output_path = os.path.join(output_dir_path, filename)
-    imsave(output_path, image_with_bb, check_contrast=False)
+    imsave(output_path, image_with_bb.astype(np.uint8), check_contrast=False)
     log_info(f"Output image saved to: {os.path.abspath(output_path)}")
 
 
@@ -189,7 +189,7 @@ if __name__ == "__main__":
     2) Path to RGB image to load and process
     3) Path for log file output 
     4) Output directory path for feedback visualisation plots
-    5) Directory path for ImageNet bounding box annotation XML
+    5) Optional: Directory path for ImageNet bounding box annotation XML
     
     """
     execute_feedback_attention()

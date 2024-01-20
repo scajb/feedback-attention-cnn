@@ -10,7 +10,7 @@ _Object-based Attention Improves Tumour Detection in Digital Pathology_.
 The Feedback Attention Ladder CNN (FAL-CNN) is a VGG19-based CNN with additional convolutional feedback pathways
 controlling spatial and channel attention at multiple convolutional levels in the feedforward path. 
 This architecture has been found to enhance classification accuracy, and provides attention distributions that 
-highlight salient objects 
+highlight salient objects.
 
 The script _**ExecuteFeedbackAttentionCNN.py**_ instantiates a FAL-NN model,
 initialises its weights from a specified file then executes the FAL-CNN against a specified input image. 
@@ -22,7 +22,9 @@ These are used to generate plots to visualise the model's attention regions,
 superimposed on the original input image.
 
 For ImageNet-100 input images, further plots are generated showing the region of the XML bounding box 
-annotation where available.
+annotation where available:
+
+![Screenshot](visualisation-example-1.png)
 
 ### Function arguments
 
@@ -42,7 +44,6 @@ based on the _ExecuteFeedbackAttentionCNN_ example supplied.
 2. ImageNet-100 Validation set should be downloaded to local directory from Kaggle Challenge site at https://www.kaggle.com/datasets/ambityga/imagenet100
 3. Optional ImageNet bounding box annotations (XML files) are available from https://image-net.org/download-bboxes.php
 
-![Screenshot](visualisation-example-1.png)
 
 ## Saccade model: Python script
 

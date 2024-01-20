@@ -174,7 +174,7 @@ class ContourSaccadingFeedbackCNNContainer(SaccadingFeedbackCNNContainer):
 
         contours = ContourGenerator.find_contours(norm_act_map * 255, threshold=0.8)
         contour_multipolygon = ContourGenerator.get_contour_union(contours)
-        largest_contour = None if len(contour_multipolygon) == 0 else max(contour_multipolygon, key=lambda a: a.area)
+        largest_contour = None if contour_multipolygon.is_empty else max(contour_multipolygon.geoms, key=lambda a: a.area)
         if largest_contour is not None:
             return largest_contour.centroid.x, largest_contour.centroid.y, largest_contour
         else:

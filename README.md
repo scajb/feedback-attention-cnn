@@ -36,6 +36,14 @@ based on the _ExecuteFeedbackAttentionCNN_ example supplied.
 4. Path to output directory, where generated images will be saved
 5. Optional path to directory of XML files containing ImageNet bounding box annotations
 
+## Data requirements
+
+1. Pre-trained feedback model weights, for 1, 2 or 3-iteration FeedbackAttentionLadderCNN in _classes/classifier_ are available from https://zenodo.org/doi/10.5281/zenodo.10361266
+2. ImageNet-100 Validation set should be downloaded to local directory from Kaggle Challenge site at https://www.kaggle.com/datasets/ambityga/imagenet100
+3. Optional ImageNet bounding box annotations (XML files) are available from https://image-net.org/download-bboxes.php
+
+![Screenshot](visualisation-example-1.png)
+
 ## Saccade model: Python script
 
 The Saccade model implements a vision-inspired algorithm for tracking to salient features in a larger input image. 
@@ -72,11 +80,6 @@ showing the sequence of saccade movements and associated regions of high attenti
 
 Local variables **_input_dir_** and **_saccade_inputs_** should be configured with the
 output directory path and input image filenames used in _ExecuteSaccadeModel_.
-## Data requirements
-
-1. Pre-trained feedback model weights, for 1, 2 or 3-iteration FeedbackAttentionLadderCNN in _classes/classifier_ are available from https://zenodo.org/doi/10.5281/zenodo.10361266
-2. ImageNet-100 Validation set should be downloaded to local directory from Kaggle Challenge site at https://www.kaggle.com/datasets/ambityga/imagenet100
-3. Optional ImageNet bounding box annotations (XML files) are available from https://image-net.org/download-bboxes.php 
 
 ## Python environment
 
@@ -85,15 +88,26 @@ on an HPC environment or local Anaconda installation.
 It is recommended to run these commands against a new, named Conda environment for this project, 
 to protect pre-existing package versions in your base environment. 
 
-The PyTorch versions were chosen for compatibility with the CUDA drivers on the HPC nodes used by the author. 
-If your local installation uses a different version of CUDA you may need to substitute compatible PyTorch versions, 
-per https://discuss.pytorch.org/t/pytorch-for-cuda-10-2/65524 and https://pytorch.org/get-started/previous-versions/.
+_The PyTorch versions specified below were chosen for compatibility with the CUDA and NVIDIA-SMI drivers on the HPC nodes 
+used by the author (11.5 and 495.29.05 respectively). If your local installation uses a different version
+of CUDA you may need to substitute compatible PyTorch versions. The following websites document the relationship 
+between given CUDA and PyTorch versions:_ 
+
+https://discuss.pytorch.org/t/pytorch-for-cuda-10-2/65524 
+
+https://pytorch.org/get-started/previous-versions/.
+
 If no CUDA installation exists, the above code will automatically run on the available CPU instead.
 ```
+# HPC-specific commands to install Conda and CUDA runtime; include or replace these as appropriate to your system
+module load anaconda 
+module load cuda
+
+# Create and activate Python environment
 conda create --name feedback-attention-env python=3.7
 source activate feedback-attention-env
 
-conda install setuptools=45.2.0
+# Install required Python libraries
 pip install libarchive openslide-python
 conda install pandas
 pip3 install torch==1.10.1+cu113 torchvision==0.11.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html

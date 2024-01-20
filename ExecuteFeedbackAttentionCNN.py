@@ -26,11 +26,13 @@ def normalise_image(norm_img):
         norm_img /= mx
     return norm_img
 
+
 def apply_heatmap(combined_heatmap, map_name="jet"):
     cmap = cm.get_cmap(map_name, 256)
     heatmap_cmap = cmap(combined_heatmap)  # as RGBA
     heatmap_cmap = heatmap_cmap[:, :, 0: 3]  # RGB
     return heatmap_cmap
+
 
 def normalise_feedback_activations(feedback_images, layer_num):
     if layer_num == 0:  # UNet output as layer 0 feedback, already an RGB image
@@ -43,12 +45,14 @@ def normalise_feedback_activations(feedback_images, layer_num):
         norm_img = normalise_image(heatmap_img)
     return norm_img
 
+
 def save_image(output_dir, filename_stub, layer_num, iteration_num, suffix, img, extn="jpeg"):
     # Write file to output dir
     filename = f"{filename_stub}-layer-{layer_num}-iteration-{iteration_num}-{suffix}.{extn}"
     output_path = os.path.join(output_dir, filename)
     imsave(output_path, img, check_contrast=False)
     log_info(f"Output image saved to: {os.path.abspath(output_path)}")
+
 
 def resize_mask_to_target(target, mask, mask_range=1.0):
     zoom_ratio = int(target.shape[0] / mask.shape[0])
@@ -100,8 +104,8 @@ def save_bounding_box_image(bboxes, output_dir_path, filename_stub, np_img):
 
 def execute_feedback_attention():
     # Derive absolute file paths from shell args
-    model_weights_path, image_path, log_path, output_dir_path, bounding_box_xml_dir_path = \
-        [os.path.abspath(p) for p in sys.argv[1:6]]
+    model_weights_path, image_path, log_path, output_dir_path = [os.path.abspath(p) for p in sys.argv[1:5]]
+    bounding_box_xml_dir_path = "" if len(sys.argv) < 6 else sys.argv[5]
 
     init_logging(log_path, sys.argv)
 

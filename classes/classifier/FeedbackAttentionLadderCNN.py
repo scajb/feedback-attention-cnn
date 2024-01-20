@@ -4,6 +4,7 @@ from torch import nn
 from classes.classifier.FeedbackModelBuilder import FeedbackModelBuilder
 from logging_support import log_info
 
+
 class FeedbackAttentionLadderCNN(nn.Module):
     def __init__(self, baseline_vgg19, insertion_layers, device, num_iterations=2):
         """
@@ -105,8 +106,8 @@ class FeedbackAttentionLadderCNN(nn.Module):
         num_iterations = int(model_weights_path.split("-iterations")[0][-1])
         model = FeedbackAttentionLadderCNN(None, "0,5,10,19,28", device=device, num_iterations=num_iterations)
 
-        log_info(f"Loading model weights from {model_weights_path}")
-        state_dict = torch.load(model_weights_path)
+        log_info(f"Loading model weights from {model_weights_path} using device {device}")
+        state_dict = torch.load(model_weights_path, map_location=device)
         model.load_state_dict(state_dict)
         return model.to(device)
 
@@ -213,4 +214,3 @@ class FeedbackAttentionLadderCNN(nn.Module):
         decoder_feedback_outputs.insert(0, dec_fb_out)
 
         return decoder_feedback_outputs
-

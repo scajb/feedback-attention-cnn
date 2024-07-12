@@ -8,11 +8,11 @@ from skimage.transform import resize
 from skimage.io import imsave
 import cv2 as cv
 
-from classes.classifier.FeedbackAttentionLadderCNN import FeedbackAttentionLadderCNN
-from classes.classifier.SaccadingFeedbackCNNContainer import ContourSaccadingFeedbackCNNContainer
-from classes.filesystem.DirectorySupport import DirectorySupport
-from classes.image.ContourGenerator import ContourGenerator
-from classes.visualisation.ImageLoader import ImageLoader
+from src.classifier.FeedbackAttentionLadderCNN import FeedbackAttentionLadderCNN
+from src.classifier.SaccadingFeedbackCNNContainer import ContourSaccadingFeedbackCNNContainer
+from src.filesystem.DirectorySupport import DirectorySupport
+from src.image.ContourGenerator import ContourGenerator
+from src.visualisation.ImageLoader import ImageLoader
 from device import get_device
 from logging_support import init_logging, log_info
 

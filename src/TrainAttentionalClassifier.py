@@ -4,10 +4,10 @@ import pandas as pd
 # Uncomment for extra debugging around gradient backpropagation
 # import torch
 
-from classes.request.TrainClassifierRequest import TrainClassifierRequest
+from src.request.TrainClassifierRequest import TrainClassifierRequest
 from device import get_device
 from logging_support import init_logging, log_info
-from classes.trainer.AttentionCNNTrainerFactory import AttentionCNNTrainerFactory
+from src.trainer.AttentionCNNTrainerFactory import AttentionCNNTrainerFactory
 
 if __name__ == "__main__":
     """

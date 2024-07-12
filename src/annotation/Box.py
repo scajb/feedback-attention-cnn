@@ -1,5 +1,5 @@
 from shapely.ops import unary_union
-from logging_support import log_info
+from src.logging_support import log_info
 from shapely.geometry import Polygon
 
 

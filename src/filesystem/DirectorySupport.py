@@ -1,6 +1,6 @@
 import os
 
-from logging_support import log_info
+from src.logging_support import log_info
 
 
 class DirectorySupport:

@@ -1,12 +1,12 @@
 import torch
 from torch import nn
 
-from classes.classifier.FeedbackModelBuilder import FeedbackModelBuilder
-from logging_support import log_info
+from src.classifier.FeedbackModelBuilder import FeedbackModelBuilder
+from src.logging_support import log_info
 
 
 class FeedbackAttentionLadderCNN(nn.Module):
-    def __init__(self, baseline_vgg19, insertion_layers, device, num_iterations=2):
+    def __init__(self, baseline_vgg19, insertion_layers, device, num_iterations=2, single_output=False):
         """
          UNet-style feedback CNN model, based on VGG19 feedforward model with symmetrical feedback path.
          Implements feedback within each block of convolutions grouped by image scale,
@@ -19,6 +19,7 @@ class FeedbackAttentionLadderCNN(nn.Module):
         super().__init__()
 
         self.device = device
+        self.single_output = single_output
         self.insertion_layers = [] if not insertion_layers else [int(lstr) for lstr in insertion_layers.split(",")]
         log_info(f"Constructing FeedbackAttentionLadderCNN model with feedback to layers {self.insertion_layers}"
                  f" for {num_iterations} feedback iterations")
@@ -142,7 +143,7 @@ class FeedbackAttentionLadderCNN(nn.Module):
                 self.call_linear_embedding_layers(encoder_outputs[-1])
 
         final_out = self.output_linear_layers(stacked_embeddings)
-        return final_out, all_feedback_activations
+        return final_out if self.single_output else final_out, all_feedback_activations
 
     def call_linear_embedding_layers(self, out):
         out = self.output_pooling(out)

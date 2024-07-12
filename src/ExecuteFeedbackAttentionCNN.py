@@ -10,11 +10,11 @@ from matplotlib import cm
 from scipy import ndimage
 from skimage.io import imsave
 
-from classes.annotation.ImageNetBoundingBoxLoader import ImageNetBoundingBoxLoader
-from classes.classifier.FeedbackAttentionLadderCNN import FeedbackAttentionLadderCNN
-from classes.filesystem.DirectorySupport import DirectorySupport
-from classes.image.ContourGenerator import ContourGenerator
-from classes.visualisation.ImageLoader import ImageLoader
+from src.annotation.ImageNetBoundingBoxLoader import ImageNetBoundingBoxLoader
+from src.classifier.FeedbackAttentionLadderCNN import FeedbackAttentionLadderCNN
+from src.filesystem.DirectorySupport import DirectorySupport
+from src.image.ContourGenerator import ContourGenerator
+from src.visualisation.ImageLoader import ImageLoader
 from device import get_device
 from logging_support import log_info, init_logging
 

@@ -1,6 +1,6 @@
 from torch import nn
 
-from ..classifier.MultiplyingFeedbackAttentionModule import MultiplyingFeedbackAttentionModule
+from .MultiplyingFeedbackAttentionModule import MultiplyingFeedbackAttentionModule
 
 
 class FeedbackModelBuilder:

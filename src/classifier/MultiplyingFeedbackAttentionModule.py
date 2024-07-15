@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 
+
 class MultiplyingFeedbackAttentionModule(nn.Module):
     def __init__(self, in_channels: int, image_size: int, device):
         super().__init__()
@@ -30,6 +31,3 @@ class MultiplyingFeedbackAttentionModule(nn.Module):
         else:
             out = inp
         return out
-
-
-

@@ -113,7 +113,7 @@ def execute_feedback_attention():
     device = get_device()  # (use_cpu=True) # use this option to force usage of CPU e.g. when GPU RAM insufficient.
 
     # Create FAL-CNN model and load pre-trained feedback weights from given file path
-    model = FeedbackAttentionLadderCNN.build_from_weights(device, model_weights_path)
+    model = FeedbackAttentionLadderCNN.build_from_weights(device, model_weights_path, single_output=False)
 
     # Load specified input image, as 224 x 224 pixel RGB torch tensor to fit model input
     required_size = (224, 224)

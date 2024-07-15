@@ -52,7 +52,7 @@ def execute_saccade_model():
     device = get_device(use_cpu=True)
 
     # Create FAL-CNN model and load pre-trained feedback weights from given file path
-    fal_cnn_model = FeedbackAttentionLadderCNN.build_from_weights(device, model_weights_path)
+    fal_cnn_model = FeedbackAttentionLadderCNN.build_from_weights(device, model_weights_path, single_output=False)
     fal_cnn_input_size = (224, 224)
 
     # Create Saccade model with embedded FAL-CNN model

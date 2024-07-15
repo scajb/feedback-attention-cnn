@@ -5,7 +5,7 @@ from .FeedbackModelBuilder import FeedbackModelBuilder
 
 
 class FeedbackAttentionLadderCNN(nn.Module):
-    def __init__(self, baseline_vgg19, insertion_layers, device, num_iterations=2, single_output=False):
+    def __init__(self, baseline_vgg19, insertion_layers, device, num_iterations=2, single_output=True):
         """
          UNet-style feedback CNN model, based on VGG19 feedforward model with symmetrical feedback path.
          Implements feedback within each block of convolutions grouped by image scale,
@@ -100,9 +100,10 @@ class FeedbackAttentionLadderCNN(nn.Module):
             FeedbackModelBuilder.copy_weights(baseline_vgg19.classifier, [6], self.output_linear_layers, [3])
 
     @staticmethod
-    def build_from_weights(device, model_weights_path):
+    def build_from_weights(device, model_weights_path, single_output):
         num_iterations = int(model_weights_path.split("-iterations")[0][-1])
-        model = FeedbackAttentionLadderCNN(None, "0,5,10,19,28", device=device, num_iterations=num_iterations)
+        model = FeedbackAttentionLadderCNN(None, "0,5,10,19,28", device=device,
+                                           num_iterations=num_iterations, single_output=single_output)
 
         state_dict = torch.load(model_weights_path, map_location=device)
         model.load_state_dict(state_dict)
@@ -138,8 +139,11 @@ class FeedbackAttentionLadderCNN(nn.Module):
             stacked_embeddings[:, num_lin_chans * (i + 1):num_lin_chans * (i + 2)] = \
                 self.call_linear_embedding_layers(encoder_outputs[-1])
 
-        final_out = self.output_linear_layers(stacked_embeddings)
-        return final_out if self.single_output else final_out, all_feedback_activations
+        model_out = self.output_linear_layers(stacked_embeddings)
+        if self.single_output:
+            return model_out  # for use in standard model training e.g. MONAI trainer, expecting single Torch tensor
+        else:
+            return model_out, all_feedback_activations  # tuple with activations for plotting later
 
     def call_linear_embedding_layers(self, out):
         out = self.output_pooling(out)

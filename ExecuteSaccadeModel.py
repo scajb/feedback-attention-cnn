@@ -13,8 +13,8 @@ from src.classifier.SaccadingFeedbackCNNContainer import ContourSaccadingFeedbac
 from src.filesystem.DirectorySupport import DirectorySupport
 from src.image.ContourGenerator import ContourGenerator
 from src.visualisation.ImageLoader import ImageLoader
-from device import get_device
-from logging_support import init_logging, log_info
+from src.device import get_device
+from src.logging_support import init_logging, log_info
 
 
 def normalise_image(norm_img):

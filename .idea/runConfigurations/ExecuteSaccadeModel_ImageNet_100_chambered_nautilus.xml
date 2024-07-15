@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ExecuteSaccadeModel ImageNet-100 chambered nautilus" type="PythonConfigurationType" factoryName="Python">
     <module name="feedback-attention-cnn" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
@@ -8,12 +9,12 @@
     </envs>
     <option name="SDK_HOME" value="C:\Users\scajb\AppData\Local\Continuum\anaconda3\python.exe" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-    <option name="IS_MODULE_SDK" value="false" />
+    <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="ExecuteSaccadeModel.py" />
-    <option name="PARAMETERS" value="&quot;C:\Users\scajb\nobackup\scajb\trained-models\weights\fal-cnn-1-iterations-ImageNet100-split-001.pth&quot; &quot;C:\Users\scajb\data\ImageNet100\Test\000-chambered_nautilus\ILSVRC2012_val_00033974.JPEG&quot; &quot;./results/ExecuteFeedbackAttentionCNN.log&quot; &quot;$PROJECT_DIR$/../../../../Temp/SaccadeVisualisations&quot; &quot;5&quot;" />
+    <option name="PARAMETERS" value="&quot;C:\Users\Andrew\PycharmProjects\feedback-attention-cnn\model weights\fal-cnn-1-iterations-ImageNet100-split-001.pth&quot; &quot;C:\Image Downloads\archive\val.X\n01968897\ILSVRC2012_val_00006645.JPEG&quot; &quot;./results/ExecuteFeedbackAttentionCNN.log&quot; &quot;$PROJECT_DIR$/../../../../Temp/SaccadeVisualisations&quot; &quot;5&quot;" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

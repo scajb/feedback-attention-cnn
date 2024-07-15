@@ -1,6 +1,6 @@
 import torch.cuda
 
-from logging_support import log_info
+from .logging_support import log_info
 
 
 # noinspection PyUnresolvedReferences

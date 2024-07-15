@@ -1,6 +1,5 @@
-from shapely.ops import unary_union
-from src.logging_support import log_info
 from shapely.geometry import Polygon
+from shapely.ops import unary_union
 
 
 class Box:

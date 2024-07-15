@@ -7,8 +7,8 @@ from skimage.transform import resize
 from torch import nn
 from torch.autograd import Variable
 
-from src.annotation.Box import Box
-from src.image.ContourGenerator import ContourGenerator
+from ..annotation.Box import Box
+from ..image.ContourGenerator import ContourGenerator
 
 
 class SaccadingFeedbackCNNContainer(nn.Module):

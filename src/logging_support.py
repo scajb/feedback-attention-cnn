@@ -32,7 +32,7 @@ def log_info_list(mylist):
 
 
 def log_version():
-    with open(f"{Path(__file__).parent}/_version.txt") as vf:
+    with open(f"{Path(__file__).parent}/../_version.txt") as vf:
         log_info(f"Code version: {vf.readline().rstrip()}")
 
 

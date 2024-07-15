@@ -1,6 +1,6 @@
 from xml.etree.ElementTree import parse
 
-from src.annotation.Box import ParentBox, Box
+from ..annotation.Box import ParentBox, Box
 
 
 class ImageNetBoundingBoxLoader:

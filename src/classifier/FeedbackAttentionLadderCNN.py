@@ -1,8 +1,8 @@
 import torch
 from torch import nn
 
-from src.classifier.FeedbackModelBuilder import FeedbackModelBuilder
-from src.logging_support import log_info
+from .FeedbackModelBuilder import FeedbackModelBuilder
+from ..logging_support import log_info
 
 
 class FeedbackAttentionLadderCNN(nn.Module):

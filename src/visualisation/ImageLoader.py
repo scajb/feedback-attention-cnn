@@ -5,7 +5,7 @@ import torch
 from skimage.io import imread
 from skimage.transform import resize
 
-from src.logging_support import log_info
+from ..logging_support import log_info
 
 
 class ImageLoader:

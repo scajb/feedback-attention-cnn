@@ -15,8 +15,8 @@ from src.classifier.FeedbackAttentionLadderCNN import FeedbackAttentionLadderCNN
 from src.filesystem.DirectorySupport import DirectorySupport
 from src.image.ContourGenerator import ContourGenerator
 from src.visualisation.ImageLoader import ImageLoader
-from device import get_device
-from logging_support import log_info, init_logging
+from src.device import get_device
+from src.logging_support import log_info, init_logging
 
 
 def normalise_image(norm_img):

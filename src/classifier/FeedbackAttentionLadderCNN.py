@@ -5,7 +5,7 @@ from .FeedbackModelBuilder import FeedbackModelBuilder
 
 
 class FeedbackAttentionLadderCNN(nn.Module):
-    def __init__(self, baseline_vgg19, insertion_layers, device, num_iterations=2, single_output=True):
+    def __init__(self, baseline_vgg19, insertion_layers, device, num_iterations=2, single_output=True, input_size=224):
         """
          UNet-style feedback CNN model, based on VGG19 feedforward model with symmetrical feedback path.
          Implements feedback within each block of convolutions grouped by image scale,
@@ -20,28 +20,40 @@ class FeedbackAttentionLadderCNN(nn.Module):
         self.device = device
         self.single_output = single_output
         self.insertion_layers = [] if not insertion_layers else [int(lstr) for lstr in insertion_layers.split(",")]
+        self.input_size = input_size
 
         # Encoder convolutional blocks based on VGG19 elements
         # Need to be individual class properties so they get included in backprop and optimisation?
 
-        self.fb_module_1 = FeedbackModelBuilder.get_feedback_module(
-            0 in self.insertion_layers, self.device, in_channels=3, image_size=(224, 224))
-
-        self.enc_conv_1 = FeedbackModelBuilder.build_small_encoder_block(baseline_vgg19, 3, 64, [0, 2])
-
         # Max pooling between each conv block
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        # Feedback attention modules to insert between encoder conv blocks
-        self.fb_module_2 = FeedbackModelBuilder.get_feedback_module(
-            5 in self.insertion_layers, self.device, in_channels=64, image_size=(112, 112))
+        if self.input_size == 56:
+            self.fb_module_1 = None
+            self.enc_conv_1 = None
+            self.fb_module_2 = None
+            self.enc_conv_2 = None
 
-        self.enc_conv_2 = FeedbackModelBuilder.build_small_encoder_block(baseline_vgg19, 64, 128, [5, 7])
+            self.fb_module_3 = FeedbackModelBuilder.get_feedback_module(
+                10 in self.insertion_layers, self.device, in_channels=3, image_size=(56, 56))
 
-        self.fb_module_3 = FeedbackModelBuilder.get_feedback_module(
-            10 in self.insertion_layers, self.device, in_channels=128, image_size=(56, 56))
+            self.enc_conv_3 = FeedbackModelBuilder.build_large_encoder_block(
+                3, 256, baseline_vgg19, [], copy_weights=False)
+        else:
+            self.fb_module_1 = FeedbackModelBuilder.get_feedback_module(
+                0 in self.insertion_layers, self.device, in_channels=3, image_size=(224, 224))
 
-        self.enc_conv_3 = FeedbackModelBuilder.build_large_encoder_block(128, 256, baseline_vgg19, [10, 12, 14, 16])
+            self.enc_conv_1 = FeedbackModelBuilder.build_small_encoder_block(baseline_vgg19, 3, 64, [0, 2])
+
+            self.fb_module_2 = FeedbackModelBuilder.get_feedback_module(
+                5 in self.insertion_layers, self.device, in_channels=64, image_size=(112, 112))
+
+            self.enc_conv_2 = FeedbackModelBuilder.build_small_encoder_block(baseline_vgg19, 64, 128, [5, 7])
+
+            self.fb_module_3 = FeedbackModelBuilder.get_feedback_module(
+                10 in self.insertion_layers, self.device, in_channels=128, image_size=(56, 56))
+
+            self.enc_conv_3 = FeedbackModelBuilder.build_large_encoder_block(128, 256, baseline_vgg19, [10, 12, 14, 16])
 
         self.fb_module_4 = FeedbackModelBuilder.get_feedback_module(
             19 in self.insertion_layers, self.device, in_channels=256, image_size=(28, 28))
@@ -64,13 +76,16 @@ class FeedbackAttentionLadderCNN(nn.Module):
         self.dec_ups_conv_2 = FeedbackModelBuilder.build_optional_decoder_upsampler_2convs(min_fb_layer <= 19, 512, 256)
         self.dec_out_conv_2 = FeedbackModelBuilder.build_optional_decocder_conv(min_fb_layer <= 19, 512, 256)
 
-        self.dec_ups_conv_3 = FeedbackModelBuilder.build_optional_decoder_upsampler_2convs(min_fb_layer <= 10, 256, 128)
-        self.dec_out_conv_3 = FeedbackModelBuilder.build_optional_decocder_conv(min_fb_layer <= 10, 256, 128)
+        include_layer_10_feedback = min_fb_layer <= 10 and self.input_size >= 56
+        self.dec_ups_conv_3 = FeedbackModelBuilder.build_optional_decoder_upsampler_2convs(include_layer_10_feedback, 256, 128)
+        self.dec_out_conv_3 = FeedbackModelBuilder.build_optional_decocder_conv(include_layer_10_feedback, 256, 128)
 
-        self.dec_ups_conv_4 = FeedbackModelBuilder.build_optional_decoder_upsampler_2convs(min_fb_layer <= 5, 128, 64)
-        self.dec_out_conv_4 = FeedbackModelBuilder.build_optional_decocder_conv(min_fb_layer <= 5, 128, 64)
+        include_layer_5_feedback = min_fb_layer <= 5 and self.input_size >= 112
+        self.dec_ups_conv_4 = FeedbackModelBuilder.build_optional_decoder_upsampler_2convs(include_layer_5_feedback, 128, 64)
+        self.dec_out_conv_4 = FeedbackModelBuilder.build_optional_decocder_conv(include_layer_5_feedback, 128, 64)
 
-        self.dec_ups_conv_5 = FeedbackModelBuilder.build_optional_decoder_upsampler_2convs(min_fb_layer == 0, 64, 3)
+        include_layer_0_feedback = min_fb_layer == 0 and self.input_size >= 224
+        self.dec_ups_conv_5 = FeedbackModelBuilder.build_optional_decoder_upsampler_2convs(include_layer_0_feedback, 64, 3)
 
         # Output pooling and FC layers
         self.output_pooling = nn.AdaptiveAvgPool2d(output_size=(7, 7))
@@ -180,14 +195,18 @@ class FeedbackAttentionLadderCNN(nn.Module):
         x = out
         for i, fb in enumerate(self.feedback_modules):
             x = x if fb is None else fb(x)
-            x = self.encoder_conv_groups[i](x)
-            x = self.pool(x)
-            encoder_outputs.append(x)
+            conv_group = self.encoder_conv_groups[i]
+            if conv_group is not None:
+                x = conv_group(x)
+                x = self.pool(x)
+                encoder_outputs.append(x)
+            else:
+                encoder_outputs.append(None)
         return encoder_outputs
 
     def call_decoder_block(self, idx, main_input, skip_connection):
         decoder_upsampler = self.decoder_upsample_convs[idx]
-        if decoder_upsampler is None or main_input is None:
+        if decoder_upsampler is None or main_input is None or skip_connection is None:
             return None, None
 
         dec_fb_out = decoder_upsampler(main_input)

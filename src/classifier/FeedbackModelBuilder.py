@@ -31,7 +31,7 @@ class FeedbackModelBuilder:
         return conv
 
     @staticmethod
-    def build_large_encoder_block(in_channels, out_channels, baseline_vgg19, weight_source_indices):
+    def build_large_encoder_block(in_channels, out_channels, baseline_vgg19, weight_source_indices, copy_weights=True):
         conv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
             nn.ReLU(inplace=True),
@@ -42,7 +42,7 @@ class FeedbackModelBuilder:
             nn.Conv2d(out_channels, out_channels, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
             nn.ReLU(inplace=True)
         )
-        if baseline_vgg19 is not None:
+        if baseline_vgg19 is not None and copy_weights:
             FeedbackModelBuilder.copy_weights(baseline_vgg19.features, weight_source_indices, conv, [0, 2, 4, 6])
         return conv
 

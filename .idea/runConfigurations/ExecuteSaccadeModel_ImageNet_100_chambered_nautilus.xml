@@ -14,7 +14,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="ExecuteSaccadeModel.py" />
-    <option name="PARAMETERS" value="&quot;C:\Users\Andrew\PycharmProjects\feedback-attention-cnn\model weights\fal-cnn-1-iterations-ImageNet100-split-001.pth&quot; &quot;C:\Image Downloads\archive\val.X\n01968897\ILSVRC2012_val_00006645.JPEG&quot; &quot;./results/ExecuteFeedbackAttentionCNN.log&quot; &quot;$PROJECT_DIR$/../../../../Temp/SaccadeVisualisations&quot; &quot;5&quot;" />
+    <option name="PARAMETERS" value="&quot;C:\Users\Andrew\PycharmProjects\feedback-attention-cnn\model weights\fal-cnn-1-iterations-ImageNet100-split-001.pth&quot; &quot;D:\Image Downloads\ImageNet-100\val.X\n01968897\ILSVRC2012_val_00006645.JPEG&quot; &quot;./results/ExecuteFeedbackAttentionCNN.log&quot; &quot;$PROJECT_DIR$/../../../../Temp/SaccadeVisualisations&quot; &quot;5&quot;" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

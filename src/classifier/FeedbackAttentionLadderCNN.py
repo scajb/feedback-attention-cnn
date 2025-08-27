@@ -110,8 +110,6 @@ class FeedbackAttentionLadderCNN(nn.Module):
         return model.to(device)
 
     def forward(self, out):
-        out.requires_grad = True
-
         # Reset all feedback activations
         self.reset_feedback()
 
